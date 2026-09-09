@@ -1,0 +1,19 @@
+Nude API — Copyright (C) 2026 Carl and contributors
+
+This service is free software licensed under GNU AGPL version 3.0 only.
+It is provided without warranty. See LICENSE for the complete terms.
+The public /source endpoint offers this deployed service's source and build files.
+
+This service uses NudeNET 3.4.2 and its bundled 320n.onnx model, provided by
+the NudeNET authors. No changes are made to the upstream package or model.
+Upstream source and licensing:
+https://github.com/notAI-tech/NudeNet/tree/v3
+https://github.com/notAI-tech/NudeNet/blob/v3/LICENSE
+https://pypi.org/project/nudenet/3.4.2/#files
+
+Dependencies retain their own licenses and notices. Exact versions and artifact
+locations are recorded in uv.lock. This source offer includes service code and
+build instructions; upstream dependency sources are available at their recorded
+projects and source distributions. Before distributing container images, provide
+the required corresponding sources for bundled copyleft dependencies as well.
+The service license does not relicense third-party model weights or dependencies.

@@ -1,0 +1,31 @@
+[project]
+name = "nude-api"
+version = "0.1.0"
+license = "AGPL-3.0-only"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "nudenet>=3.4.2",
+    "pillow>=12.3.0",
+    "pydantic-settings>=2.15.0",
+    "pympp[tempo]>=0.11.0",
+    "uvicorn[standard]>=0.52.4",
+]
+
+[project.optional-dependencies]
+aws = [
+    "awslambdaric>=4.0.2",
+    "boto3>=1.43.90",
+    "mangum>=0.22.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "moto[dynamodb]>=5.2.3",
+    "pytest>=9.1.1",
+    "ruff>=0.16.6",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

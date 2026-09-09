@@ -1,0 +1,16 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - '127.0.0.1:8000:8000'
+    volumes:
+      - service-data:/service/data
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', '.venv/bin/python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+volumes:
+  service-data:

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nude API — Image moderation, per request</title>
+<style>
+  :root{color-scheme:light;--ink:#16241f;--green:#146548;--paper:#f5f5ee}
+  *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,sans-serif}
+  main{max-width:1060px;margin:auto;padding:30px 26px 70px}nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd4c9;padding-bottom:22px}
+  a{color:var(--green);text-underline-offset:4px}nav strong{font-size:22px;letter-spacing:-1px}.hero{padding:78px 0 54px;max-width:820px}.eyebrow{font:12px ui-monospace,monospace;text-transform:uppercase;letter-spacing:2px;color:var(--green)}
+  h1{font-size:clamp(42px,7vw,76px);line-height:1.05;letter-spacing:-4px;margin:22px 0}p{max-width:650px;color:#506058}h2{font-size:23px;letter-spacing:-.6px}.button{display:inline-block;background:var(--green);color:white;padding:12px 22px;border-radius:6px;text-decoration:none;margin-top:16px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{border:1px solid #cbd4c9;border-radius:12px;padding:26px;background:#fffefa}.card h2{margin-top:0}pre{background:#182a22;color:#d4ebd9;padding:24px;border-radius:8px;font:13px/1.7 ui-monospace,monospace;overflow:auto}code{font-family:ui-monospace,monospace}#price{font-size:38px;color:var(--ink);letter-spacing:-1px;margin:12px 0}small{color:#506058}footer{margin-top:42px;border-top:1px solid #cbd4c9;padding-top:20px;font-size:13px}@media(max-width:650px){.grid{grid-template-columns:1fr}h1{letter-spacing:-2px}.hero{padding-top:48px}}
+</style>
+<main>
+  <nav><strong>nude api<span style="color:#378f63">.</span></strong><a href="/docs">API reference ↗</a></nav>
+  <section class="hero"><div class="eyebrow">NudeNET · Tempo · Machine Payments Protocol</div><h1>Image moderation.<br>One request at a time.</h1><p>Detect exposed body parts with a simple Python API. Send an image, pay through your MPP client, and receive confidence scores and bounding boxes.</p><a class="button" href="/docs">Explore the API →</a></section>
+  <div class="grid">
+    <section class="card"><div class="eyebrow">Usage-based pricing</div><div id="price">Loading price…</div><small id="network"></small><p>One image per request. No subscription. Each paid response includes a payment receipt.</p><a href="/v1/pricing">View payment configuration ↗</a></section>
+    <section class="card"><h2>Your images stay transient.</h2><p>Images are decoded and analyzed in memory. The service retains payment replay records and paid JSON results for retry recovery, without storing uploaded image files.</p><small>JPEG, PNG, and static WebP. See the pricing endpoint for upload limits.</small></section>
+  </div>
+  <section style="margin-top:40px"><h2>A familiar HTTP interface.</h2><p>Send raw image bytes to get an HTTP 402 payment challenge. An MPP client handles payment and retries the same request.</p><pre>curl http://localhost:8000/v1/moderate \
+  -H 'Content-Type: image/jpeg' \
+  --data-binary @image.jpg</pre></section>
+  <footer>Open source under AGPL-3.0 · <a href="/source">Download service source &amp; license</a> · <a href="https://github.com/notAI-tech/NudeNet">NudeNET source</a><p>NudeNET predicts visible body parts. Its score is not a calibrated probability that an image is unsafe. This API does not assess violence, image authenticity, age, or legality. Provided without warranty.</p></footer>
+</main>
+<script>
+fetch('/v1/pricing').then(r=>{if(!r.ok)throw Error();return r.json()}).then(p=>{
+  document.querySelector('#price').textContent=p.payment_mode==='development'?'Local development':`${p.amount_per_image} tokens / image`;
+  document.querySelector('#network').textContent=p.payment_mode==='development'?'Payments are disabled on this instance.':`Tempo ${p.chain_id===42431?'testnet':'mainnet'} · token ${p.currency}`;
+}).catch(()=>{document.querySelector('#price').textContent='Price unavailable';});
+</script>
+</html>

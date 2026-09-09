@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless NudeNET moderation with Tempo MPP and durable DynamoDB payments
+
+Parameters:
+  Recipient:
+    Type: String
+    Default: '0x9c06F3329dA1f694Cb3f60e0B89e5CE8af5dadCc'
+    AllowedPattern: '^0x[0-9a-fA-F]{40}$'
+  ChainId:
+    Type: String
+    Default: '42431'
+    AllowedValues: ['42431', '4217']
+  Currency:
+    Type: String
+    Default: '0x20c0000000000000000000000000000000000000'
+    AllowedPattern: '^0x[0-9a-fA-F]{40}$'
+  PricePerImage:
+    Type: String
+    Default: '0.0001'
+  MppSecret:
+    Type: String
+    NoEcho: true
+    MinLength: 32
+    Description: Persistent random challenge-signing secret; not a wallet private key
+
+Resources:
+  Payments:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  Api:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Dockerfile: deploy/Dockerfile.lambda
+      DockerContext: .
+      DockerTag: nude-api
+    Properties:
+      PackageType: Image
+      Architectures: [x86_64]
+      MemorySize: 2048
+      Timeout: 90
+      ReservedConcurrentExecutions: 5
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: BUFFERED
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:DeleteItem']
+              Resource: !GetAtt Payments.Arn
+      Environment:
+        Variables:
+          PAYMENT_MODE: tempo
+          TEMPO_RECIPIENT: !Ref Recipient
+          TEMPO_CHAIN_ID: !Ref ChainId
+          TEMPO_CURRENCY: !Ref Currency
+          PRICE_PER_IMAGE: !Ref PricePerImage
+          MPP_SECRET_KEY: !Ref MppSecret
+          DYNAMODB_TABLE: !Ref Payments
+          # Lambda's 6 MiB synchronous payload includes base64 and event headers.
+          MAX_IMAGE_BYTES: '4194304'
+  Logs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${Api}'
+      RetentionInDays: 14
+
+Outputs:
+  ApiUrl:
+    Value: !GetAtt ApiUrl.FunctionUrl
+  PaymentTable:
+    Value: !Ref Payments
