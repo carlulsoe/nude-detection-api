@@ -1,4 +1,4 @@
-# Nude API
+# Nude Detection API
 
 An open-source, serverless SaaS API for NudeNET image moderation, paid per image
 using Tempo's Machine Payments Protocol (MPP). AWS Lambda serves the Python model

@@ -51,14 +51,14 @@ def create_app(settings: Settings | None = None, detector_factory=None) -> FastA
                         currency=config.tempo_currency,
                         chain_id=config.tempo_chain_id,
                     ),
-                    realm="nude-api/v1/moderate",
+                    realm="nude-detection-api/v1/moderate",
                     secret_key=config.mpp_secret_key.get_secret_value(),
                     store=app.state.store,
                 )
             yield
 
     app = FastAPI(
-        title="Nude API",
+        title="Nude Detection API",
         version="0.1.0",
         lifespan=lifespan,
         description="NudeNET image moderation with per-image Tempo MPP payments.",
@@ -83,7 +83,7 @@ def create_app(settings: Settings | None = None, detector_factory=None) -> FastA
             source_archive(),
             media_type="application/gzip",
             headers={
-                "Content-Disposition": 'attachment; filename="nude-api-source.tar.gz"',
+                "Content-Disposition": 'attachment; filename="nude-detection-api-source.tar.gz"',
             },
         )
 

@@ -129,10 +129,10 @@ def test_source_offer_contains_build_files_and_no_runtime_secrets(tmp_path):
         assert response.status_code == 200
         with tarfile.open(fileobj=BytesIO(response.content)) as source:
             names = source.getnames()
-            assert "nude-api/LICENSE" in names
-            assert "nude-api/deploy/Dockerfile.lambda" in names
-            assert "nude-api/app/lambda_handler.py" in names
-            assert "nude-api/template.yaml" in names
+            assert "nude-detection-api/LICENSE" in names
+            assert "nude-detection-api/deploy/Dockerfile.lambda" in names
+            assert "nude-detection-api/app/lambda_handler.py" in names
+            assert "nude-detection-api/template.yaml" in names
             assert all(
                 "/.env" not in name or name.endswith(".env.example") for name in names
             )

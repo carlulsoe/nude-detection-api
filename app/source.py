@@ -38,6 +38,6 @@ def source_archive() -> bytes:
         for path in sorted(files):
             if path.is_file() and not path.is_symlink():
                 archive.add(
-                    path, arcname=f"nude-api/{path.relative_to(root)}", recursive=False
+                    path, arcname=f"nude-detection-api/{path.relative_to(root)}", recursive=False
                 )
     return buffer.getvalue()

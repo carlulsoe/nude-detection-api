@@ -46,7 +46,7 @@ Resources:
     Metadata:
       Dockerfile: deploy/Dockerfile.lambda
       DockerContext: .
-      DockerTag: nude-api
+      DockerTag: nude-detection-api
     Properties:
       PackageType: Image
       Architectures: [x86_64]
